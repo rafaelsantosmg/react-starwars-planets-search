@@ -25,7 +25,7 @@ export default function Table() {
         { starWars.length !== 0 ? starWars.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
-            <td>{ planet.rotation_period}</td>
+            <td>{ planet.rotation_period }</td>
             <td>{ planet.orbital_period }</td>
             <td>{ planet.diameter }</td>
             <td>{ planet.climate }</td>
@@ -35,7 +35,7 @@ export default function Table() {
             <td>{ planet.population }</td>
             <td>{ planet.films }</td>
             <td>{ planet.created }</td>
-            <td>{ planet.edited}</td>
+            <td>{ planet.edited }</td>
             <td>{ planet.url }</td>
           </tr>
         )) : <tr><td>Loading...</td></tr> }
