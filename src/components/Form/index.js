@@ -1,9 +1,36 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
+import Context from '../../context/context';
 
 export default function FormBox() {
+  const { filterByName,
+    setFilterByName,
+  } = useContext(Context);
+
+  const handleInput = ({ target }) => {
+    const { name, value } = target;
+    setFilterByName({
+      [name]: value,
+    });
+  };
+
+  const { name } = filterByName;
   return (
     <Form>
+      <Row className="align-items-center mb-3">
+        <Col />
+        <Col xs lg="4">
+          <Form.Control
+            data-testid="name-filter"
+            type="text"
+            name="name"
+            placeholder="Filtrar por nome"
+            value={ name }
+            onChange={ handleInput }
+          />
+        </Col>
+        <Col />
+      </Row>
       <Row className="align-items-center mb-3">
         <Col xs lg="1" />
         <Col>

@@ -4,7 +4,8 @@ import Context from '../../context/context';
 import './style.css';
 
 export default function Table() {
-  const { starWars } = useContext(Context);
+  const { starWars, filterPlanetName } = useContext(Context);
+  const filterByName = filterPlanetName.length !== 0 ? filterPlanetName : starWars;
   return (
     <TableBox striped bordered hover variant="dark">
       <thead>
@@ -22,7 +23,7 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
-        { starWars.length !== 0 ? starWars.map((planet) => (
+        { starWars.length !== 0 ? filterByName.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>

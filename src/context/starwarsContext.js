@@ -5,6 +5,7 @@ import fetchAPI from '../data';
 
 export default function StarwarsContext({ children }) {
   const [starWars, setStarWars] = useState([]);
+  const [filterByName, setFilterByName] = useState({ name: '' });
 
   useEffect(() => {
     const getAPI = async () => {
@@ -14,8 +15,18 @@ export default function StarwarsContext({ children }) {
     getAPI();
   }, []);
 
+  const filterPlanetName = starWars
+    .filter((planet) => planet.name.includes(filterByName.name));
+
   return (
-    <Context.Provider value={ { starWars } }>
+    <Context.Provider
+      value={ {
+        starWars,
+        filterByName,
+        filterPlanetName,
+        setFilterByName,
+      } }
+    >
       { children }
     </Context.Provider>
   );
