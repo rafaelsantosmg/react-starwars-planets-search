@@ -16,6 +16,8 @@ export default function FormBox() {
     value: '0',
   });
 
+  const [filterOption, setFilterOption] = useState(selectFirstOptions);
+
   const handleInputName = ({ target }) => {
     setFilterByName({
       [target.name]: target.value,
@@ -28,13 +30,11 @@ export default function FormBox() {
     );
   };
 
-  // const filterOptions = selectFirstOptions
-  //   .filter((option) => option !== addFilter.column) : selectFirstOptions;
-
   const handleClick = (event) => {
     event.preventDefault();
     setFilterByNumericValues((prev) => ([...prev, addFilter]));
     setIndex((index) => index + 1);
+    setFilterOption(filterOption.filter((option) => option !== addFilter.column));
   };
 
   const { value } = addFilter;
@@ -63,7 +63,7 @@ export default function FormBox() {
             name="column"
             onChange={ handleChangeSelectAndNumber }
           >
-            { selectFirstOptions.map((option) => (
+            { filterOption.map((option) => (
               <option key={ option } value={ option }>{ option }</option>
             )) }
           </Form.Select>
