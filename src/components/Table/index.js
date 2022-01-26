@@ -1,11 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Table as TableBox } from 'react-bootstrap';
 import Context from '../../context/context';
 import './style.css';
 
 export default function Table() {
-  const { starWars, filterPlanetName } = useContext(Context);
-  const filterByName = filterPlanetName.length !== 0 ? filterPlanetName : starWars;
+  const { starWars, filterByName, filterStarWars } = useContext(Context);
+  const [filterPlanetName, setFilterPlanetName] = useState([]);
+
+  useEffect(() => {
+    const filterPlanets = () => {
+      if (filterByName.name !== '') {
+        return starWars.filter((planet) => planet.name.includes(filterByName.name));
+      } if (filterStarWars.length !== 0) {
+        return filterStarWars;
+      }
+      return starWars;
+    };
+    setFilterPlanetName(filterPlanets());
+  }, [filterByName, filterByName.name, filterStarWars, starWars]);
+
   return (
     <TableBox striped bordered hover variant="dark">
       <thead>
@@ -23,7 +36,7 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
-        { starWars.length !== 0 ? filterByName.map((planet) => (
+        { starWars.length !== 0 ? filterPlanetName.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>

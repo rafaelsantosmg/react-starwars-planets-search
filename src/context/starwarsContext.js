@@ -5,7 +5,10 @@ import fetchAPI from '../data';
 
 export default function StarwarsContext({ children }) {
   const [starWars, setStarWars] = useState([]);
+  const [filterStarWars, setFilterStarWars] = useState([]);
   const [filterByName, setFilterByName] = useState({ name: '' });
+  const [filterByNumericValues, setFilterByNumericValues] = useState([]);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const getAPI = async () => {
@@ -15,16 +18,37 @@ export default function StarwarsContext({ children }) {
     getAPI();
   }, []);
 
-  const filterPlanetName = starWars
-    .filter((planet) => planet.name.includes(filterByName.name));
+  useEffect(() => {
+    const switchFilter = () => {
+      const { column, comparison, value } = filterByNumericValues.length > 0
+        && filterByNumericValues[index - 1];
+      switch (comparison) {
+      case 'maior que':
+        return setFilterStarWars(starWars.filter((planets) => Number(planets[column])
+          > Number((value))));
+      case 'menor que':
+        return setFilterStarWars(starWars.filter((planets) => Number(planets[column])
+          < Number((value))));
+      case 'igual a':
+        return setFilterStarWars(starWars.filter((planets) => Number(planets[column])
+          === Number((value))));
+      default:
+        return starWars;
+      }
+    };
+    switchFilter();
+  }, [filterByNumericValues, starWars, index]);
 
   return (
     <Context.Provider
       value={ {
         starWars,
         filterByName,
-        filterPlanetName,
+        filterByNumericValues,
+        filterStarWars,
+        setIndex,
         setFilterByName,
+        setFilterByNumericValues,
       } }
     >
       { children }
