@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import Context from '../../context/context';
 import { selectFirstOptions, selectSecondOptions } from '../../services';
@@ -7,8 +7,11 @@ export default function FormBox() {
   const { filterByName: { name },
     setFilterByName,
     setFilterByNumericValues,
+    filterByNumericValues,
     setIndex,
   } = useContext(Context);
+
+  const [filterOption, setFilterOption] = useState(selectFirstOptions);
 
   const [addFilter, setAddFilter] = useState({
     column: 'population',
@@ -16,7 +19,22 @@ export default function FormBox() {
     value: '0',
   });
 
-  const [filterOption, setFilterOption] = useState(selectFirstOptions);
+  // const [position, setPosition] = useState({});
+
+  useEffect(() => {
+    const getOptions = () => {
+      setFilterOption(filterOption);
+    };
+    getOptions();
+  }, [filterOption]);
+
+  useEffect(() => {
+    setAddFilter({
+      column: filterOption[0],
+      comparison: 'maior que',
+      value: '0',
+    });
+  }, [filterOption]);
 
   const handleInputName = ({ target }) => {
     setFilterByName({
@@ -25,9 +43,10 @@ export default function FormBox() {
   };
 
   const handleChangeSelectAndNumber = ({ target }) => {
-    setAddFilter(
-      { ...addFilter, [target.name]: target.value },
-    );
+    setAddFilter({
+      ...addFilter,
+      [target.name]: target.value,
+    });
   };
 
   const handleClick = (event) => {
@@ -37,9 +56,19 @@ export default function FormBox() {
     setFilterOption(filterOption.filter((option) => option !== addFilter.column));
   };
 
+  const handleDeleteClick = ({ target }) => {
+    const position = selectFirstOptions.indexOf(target.name);
+    const filterRemove = filterByNumericValues
+      .filter((filterByNumeric) => filterByNumeric.column !== target.name);
+    setIndex((index) => index - 1);
+    setFilterByNumericValues(filterRemove);
+    filterOption.splice(position, 0, target.name);
+    setFilterOption(filterOption);
+  };
+
   const { value } = addFilter;
   return (
-    <Form onSubmit={ handleClick }>
+    <Form>
       <Row className="align-items-center mb-3">
         <Col />
         <Col xs lg="4">
@@ -91,9 +120,11 @@ export default function FormBox() {
         </Col>
         <Col xs lg="2">
           <Button
-            type="submit"
+            type="button"
             data-testid="button-filter"
             variant="primary"
+            onClick={ handleClick }
+            disabled={ filterOption.length === 0 }
           >
             Filtrar
           </Button>
@@ -126,6 +157,34 @@ export default function FormBox() {
           />
         </Col>
         <Col xs lg="2" />
+      </Row>
+      <Row>
+        <Col>
+          { filterByNumericValues.length !== 0 && filterByNumericValues
+            .map((values, index) => (
+              <div data-testid="filter" key={ index }>
+                <span>
+                  { values.column }
+                  { ' ' }
+                </span>
+                <span>
+                  { values.comparison }
+                  { ' ' }
+                </span>
+                <span>
+                  { values.value }
+                  { ' ' }
+                </span>
+                <Button
+                  type="button"
+                  name={ values.column }
+                  onClick={ handleDeleteClick }
+                >
+                  X
+                </Button>
+              </div>
+            )) }
+        </Col>
       </Row>
     </Form>
   );

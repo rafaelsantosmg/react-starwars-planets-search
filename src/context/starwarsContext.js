@@ -33,7 +33,7 @@ export default function StarwarsContext({ children }) {
         return setFilterStarWars(starWars.filter((planets) => Number(planets[column])
           === Number((value))));
       default:
-        return starWars;
+        return setFilterStarWars([]);
       }
     };
     switchFilter();
@@ -46,6 +46,7 @@ export default function StarwarsContext({ children }) {
         filterByName,
         filterByNumericValues,
         filterStarWars,
+        index,
         setIndex,
         setFilterByName,
         setFilterByNumericValues,
