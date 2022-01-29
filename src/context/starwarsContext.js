@@ -8,7 +8,12 @@ export default function StarwarsContext({ children }) {
   const [filterStarWars, setFilterStarWars] = useState([]);
   const [filterByName, setFilterByName] = useState({ name: '' });
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
+  const [filterOrder, setFilterOrder] = useState([]);
   const [index, setIndex] = useState(0);
+  const [order, setOrder] = useState({
+    column: 'population',
+    sort: 'ASC',
+  });
 
   useEffect(() => {
     const getAPI = async () => {
@@ -46,10 +51,13 @@ export default function StarwarsContext({ children }) {
         filterByName,
         filterByNumericValues,
         filterStarWars,
-        index,
+        order,
+        filterOrder,
         setIndex,
         setFilterByName,
         setFilterByNumericValues,
+        setOrder,
+        setFilterOrder,
       } }
     >
       { children }

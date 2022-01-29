@@ -4,11 +4,16 @@ import Context from '../../context/context';
 import { selectFirstOptions, selectSecondOptions } from '../../services';
 
 export default function FormBox() {
-  const { filterByName: { name },
+  const {
+    starWars,
+    filterByName: { name },
+    filterByNumericValues,
+    order,
     setFilterByName,
     setFilterByNumericValues,
-    filterByNumericValues,
     setIndex,
+    setOrder,
+    setFilterOrder,
   } = useContext(Context);
 
   const [filterOption, setFilterOption] = useState(selectFirstOptions);
@@ -18,8 +23,6 @@ export default function FormBox() {
     comparison: 'maior que',
     value: '0',
   });
-
-  // const [position, setPosition] = useState({});
 
   useEffect(() => {
     const getOptions = () => {
@@ -64,6 +67,23 @@ export default function FormBox() {
     setFilterByNumericValues(filterRemove);
     filterOption.splice(position, 0, target.name);
     setFilterOption(filterOption);
+  };
+
+  const handleChangeOrder = ({ target }) => {
+    setOrder({
+      ...order,
+      [target.name]: target.value,
+    });
+  };
+
+  const handleClickOrder = () => {
+    if (order.sort === 'ASC') {
+      setFilterOrder(starWars.sort((planetA, planetB) => (
+        Number(planetA[order.column]) - Number(planetB[order.column]))));
+    } if (order.sort === 'DESC') {
+      setFilterOrder(starWars.sort((planetA, planetB) => (
+        Number(planetB[order.column]) - Number(planetA[order.column]))));
+    }
   };
 
   const { value } = addFilter;
@@ -131,32 +151,56 @@ export default function FormBox() {
         </Col>
       </Row>
       <Row className="align-items-center mb-3">
-        <Col xs lg="1" />
+        <Col xs lg="3" />
         <Col>
           <Form.Label htmlFor="order-option">Ordenar</Form.Label>
-          <Form.Select id="order-option" aria-label="Default select example">
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+          <Form.Select
+            data-testid="column-sort"
+            id="order-option"
+            aria-label="Default select example"
+            name="column"
+            onChange={ handleChangeOrder }
+          >
+            { selectFirstOptions.map((option) => (
+              <option key={ option } value={ option }>{ option }</option>
+            )) }
           </Form.Select>
         </Col>
         <Col>
-          <Form.Label htmlFor="custom-switch"> </Form.Label>
+          <Form.Label htmlFor="custom-asc"> </Form.Label>
           <Form.Check
-            type="switch"
-            id="custom-switch"
+            data-testid="column-sort-input-asc"
+            type="radio"
+            id="custom-asc"
+            name="sort"
+            value="ASC"
             label="Ascendente"
+            onChange={ handleChangeOrder }
           />
         </Col>
         <Col>
-          <Form.Label htmlFor="custom-switch"> </Form.Label>
+          <Form.Label htmlFor="custom-desc"> </Form.Label>
           <Form.Check
-            type="switch"
-            id="custom-switch"
+            data-testid="column-sort-input-desc"
+            type="radio"
+            id="custom-desc"
+            name="sort"
+            value="DESC"
             label="Descendente"
+            onChange={ handleChangeOrder }
           />
         </Col>
-        <Col xs lg="2" />
+        <Col>
+          <Button
+            type="button"
+            data-testid="column-sort-button"
+            name="orderButton"
+            onClick={ handleClickOrder }
+          >
+            Ordenar
+          </Button>
+        </Col>
+        <Col xs lg="3" />
       </Row>
       <Row>
         <Col>
